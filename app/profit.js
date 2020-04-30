@@ -1,17 +1,17 @@
-const fs = require('fs-extra');
-const paths = require('../resources/paths');
 const Currency = require('tf2-currencies');
-const axios = require('axios');
 
 // TODO: Make this into class
+// TODO: No conversion, rather, track currency directly
 /**
+ * @param {Object} polldata polldata object
+ * @param {Number} keyVal curret value of key(5021;6)
  * @param {Number} start time to start plot
  * @param {Number} interval time interval to plot
  * @param {Number} end time to end plot
  * @return {Object}
  */
-exports.get = async function get(start, interval, end) {
-	const polldata = await fs.readJSON(paths.files.polldata);
+exports.get = function get(polldata, keyVal, start, interval, end) {
+	/*
 	const response = await axios(
 		{
 			url: 'https://api.prices.tf/items/5021;6',
@@ -22,7 +22,8 @@ exports.get = async function get(start, interval, end) {
 			json: true
 		}
 	);
-	const keyVal = response.data.sell.metal;
+	const keyVal = response.data.sell.metal;*/
+	if (!Object.prototype.hasOwnProperty.call(polldata, 'offerData')) polldata.offerData = {};
 	const trades = Object.keys(polldata.offerData).map((key)=>{
 		const ret = polldata.offerData[key];
 		ret.time = polldata.timestamps[key];
@@ -52,20 +53,8 @@ exports.get = async function get(start, interval, end) {
 		}
 		iter++;
 		let isGift = false;
-		if (!Object.prototype.hasOwnProperty.call(trade, 'dict')) {
-			continue;// trade has no items ?
-		}
-		if (typeof Object.keys(trade.dict.our).length == 'undefined') {
+		if (!Object.keys(trade.dict.our).length) {
 			isGift = true;// no items on our side, so it is probably gift
-		} else if (Object.keys(trade.dict.our).length != 0) { // trade is not a gift
-			if (!Object.prototype.hasOwnProperty.call(trade, 'value')) {
-				continue; // trade is missing value object
-			}
-			if (!(Object.keys(trade.prices).length > 0)) {
-				continue; // have no prices, broken, skip
-			}
-		} else {
-			isGift = true; // no items on our side, so it is probably gift
 		}
 		if (typeof trade.value === 'undefined') {
 			trade.value = {};
@@ -114,6 +103,7 @@ exports.get = async function get(start, interval, end) {
 			tracker.profitTrack.countProfit( tracker.convert(trade.value.their, trade.value.rate) - tracker.convert(trade.value.our, trade.value.rate), trade.time);
 		}
 	}
+
 	return {
 		profitTotal: tracker.profitTrack.getFormated(tracker.profitTrack.profit),
 		profitTimed: tracker.profitTrack.getFormated(tracker.profitTrack.profitTimed),

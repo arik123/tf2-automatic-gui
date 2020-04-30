@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
+const autoprice = require('../autoprice');
 
 router.get('/', (req, res) => {
 	if (!req.query.sku || !isSKU(req.query.sku)) {
@@ -9,16 +9,9 @@ router.get('/', (req, res) => {
 		});
 		return;
 	}
-	axios({
-		method: 'get',
-		url: `https://api.prices.tf/items/${req.query.sku}`,
-		params: {
-			src: 'bptf'
-		},
-		type: 'json'
-	})
-		.then((resp) => {
-			res.json(resp.data);
+	autoprice(req.query.sku)
+		.then((resp) = {
+
 		})
 		.catch((err) => {
 			throw err;
