@@ -22,7 +22,8 @@ exports.get = function get(polldata, keyVal, start, interval, end) {
 			json: true
 		}
 	);
-	const keyVal = response.data.sell.metal;*/
+	const keyVal = response.data.sell.metal;
+	*/
 	if (!Object.prototype.hasOwnProperty.call(polldata, 'offerData')) polldata.offerData = {};
 	const trades = Object.keys(polldata.offerData).map((key)=>{
 		const ret = polldata.offerData[key];
@@ -103,14 +104,23 @@ exports.get = function get(polldata, keyVal, start, interval, end) {
 			tracker.profitTrack.countProfit( tracker.convert(trade.value.their, trade.value.rate) - tracker.convert(trade.value.our, trade.value.rate), trade.time);
 		}
 	}
-
+	const stock = tracker.itemStock;
+	for (const key in stock) {
+		if (stock.hasOwnProperty(key)) {
+			const item = stock[key];
+			if (item.count <= 0) {
+				delete stock[key];
+			}
+		}
+	}
 	return {
 		profitTotal: tracker.profitTrack.getFormated(tracker.profitTrack.profit),
 		profitTimed: tracker.profitTrack.getFormated(tracker.profitTrack.profitTimed),
 		profitPlot: tracker.profitTrack.profitPlot,
 		numberOfTrades: iter,
 		overpriceProfit: tracker.profitTrack.getFormated(overpriceProfit),
-		keyValue: keyVal
+		keyValue: keyVal,
+		stock: stock
 	};
 };
 
