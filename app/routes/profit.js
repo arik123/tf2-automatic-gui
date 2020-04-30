@@ -16,18 +16,11 @@ router.get('/', (req, res) => { // maybe make this async
 				.then((polldata)=>{
 					autoprice('5021;6')
 						.then((resp) => {
-							profit.get(polldata, Number(req.query.start), Number(req.query.interval), Number(req.query.end))
-								.then((data) => {
-									res.json({
-										success: 1,
-										data
-									});
-								})
-								.catch((err) => {
-									res.json({
-										success: 0
-									});
-								});
+							const data = profit.get(polldata, Number(req.query.start), Number(req.query.interval), Number(req.query.end));
+							res.json({
+								success: 1,
+								data
+							});
 						})
 						.catch((err) => {
 							res.json({

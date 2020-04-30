@@ -7,10 +7,10 @@ metal skus
 '5000;6': 1  scrap
 */
 
-test('polldata exists, but is empty', async () => {
+test('polldata exists, but is empty', () => {
 	const testPolldata = {
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0 keys, 0 ref',
 		profitTimed: '0 keys, 0 ref',
@@ -22,7 +22,7 @@ test('polldata exists, but is empty', async () => {
 	});
 });
 
-test('offer is missing all properties', async () => {
+test('offer is missing all properties', () => {
 	const testPolldata = {
 		timestamps: {
 			3966389539: 1585330036
@@ -33,7 +33,7 @@ test('offer is missing all properties', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0 keys, 0 ref',
 		profitTimed: '0 keys, 0 ref',
@@ -45,7 +45,7 @@ test('offer is missing all properties', async () => {
 	});
 });
 
-test('gift', async () => {
+test('gift', () => {
 	const testPolldata = {
 		timestamps: {
 			3966325519: 1585326806
@@ -63,7 +63,7 @@ test('gift', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0 keys, 0 ref',
 		profitTimed: '0 keys, 0 ref',
@@ -80,7 +80,7 @@ test('gift', async () => {
 	});
 });
 
-test('1 scrap profit, no price change', async () => {
+test('1 scrap profit, no price change', () => {
 	const testPolldata = {
 		timestamps: {
 			0: 1000,
@@ -164,7 +164,7 @@ test('1 scrap profit, no price change', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0.11 ref',
 		profitTimed: '0.11 ref',
@@ -176,7 +176,7 @@ test('1 scrap profit, no price change', async () => {
 	});
 });
 
-test('0 scrap profit, sellprice went down', async () => {
+test('0 scrap profit, sellprice went down', () => {
 	const testPolldata = {
 		timestamps: {
 			0: 1000,
@@ -261,7 +261,7 @@ test('0 scrap profit, sellprice went down', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0 keys, 0 ref',
 		profitTimed: '0 keys, 0 ref',
@@ -273,7 +273,7 @@ test('0 scrap profit, sellprice went down', async () => {
 	});
 });
 
-test('1 scrap profit, sellprice went down, overpay 1 scrap', async () => {
+test('1 scrap profit, sellprice went down, overpay 1 scrap', () => {
 	const testPolldata = {
 		timestamps: {
 			0: 1000,
@@ -357,7 +357,7 @@ test('1 scrap profit, sellprice went down, overpay 1 scrap', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0.11 ref',
 		profitTimed: '0.11 ref',
@@ -369,7 +369,7 @@ test('1 scrap profit, sellprice went down, overpay 1 scrap', async () => {
 	});
 });
 
-test('2 scrap profit, sellprice went up', async () => {
+test('2 scrap profit, sellprice went up', () => {
 	const testPolldata = {
 		timestamps: {
 			0: 1000,
@@ -453,7 +453,7 @@ test('2 scrap profit, sellprice went up', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0.22 ref',
 		profitTimed: '0.22 ref',
@@ -466,7 +466,7 @@ test('2 scrap profit, sellprice went up', async () => {
 });
 
 
-test('4 trades, with price change, no leftover inventory', async () => {
+test('4 trades, with price change, no leftover inventory', () => {
 	const testPolldata = {
 		timestamps: {
 			0: 1000,
@@ -626,7 +626,7 @@ test('4 trades, with price change, no leftover inventory', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '2.66 ref',
 		profitTimed: '2.66 ref',
@@ -638,7 +638,7 @@ test('4 trades, with price change, no leftover inventory', async () => {
 	});
 });
 
-test('4 trades, with price change, leftover inventory', async () => {
+test('4 trades, with price change, leftover inventory', () => {
 	const testPolldata = {
 		timestamps: {
 			0: 1000,
@@ -798,7 +798,7 @@ test('4 trades, with price change, leftover inventory', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '1.88 ref',
 		profitTimed: '1.88 ref',
@@ -815,7 +815,7 @@ test('4 trades, with price change, leftover inventory', async () => {
 	});
 });
 
-test('6 trades, with 2 price changes, leftover inventory', async () => {
+test('6 trades, with 2 price changes, leftover inventory', () => {
 	const testPolldata = {
 		timestamps: {
 			0: 1000,
@@ -1052,7 +1052,7 @@ test('6 trades, with 2 price changes, leftover inventory', async () => {
 			}
 		}
 	};
-	const ret = await profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '3.55 ref',
 		profitTimed: '3.55 ref',
