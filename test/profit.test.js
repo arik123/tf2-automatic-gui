@@ -1,3 +1,4 @@
+const polldataCreator = require('./polldataCreator');
 const profit = require('../app/profit');
 const keyVal = 53;
 /*
@@ -81,90 +82,20 @@ test('gift', () => {
 });
 
 test('1 scrap profit, no price change', () => {
-	const testPolldata = {
-		timestamps: {
-			0: 1000,
-			1: 1500
+	const prices = {
+		buy: {
+			keys: 0,
+			metal: 0.88
 		},
-		offerData: {
-			0: {
-				dict: {
-					our: {
-						'5001;6': 2,
-						'5000;6': 2
-					},
-					their: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					their: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			1: {
-				dict: {
-					their: {
-						'5002;6': 1
-					},
-					our: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 9,
-						keys: 0,
-						metal: 1
-					},
-					their: {
-						total: 9,
-						keys: 0,
-						metal: 1
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			}
+		sell: {
+			keys: 0,
+			metal: 1
 		}
 	};
-	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const poll = new polldataCreator()
+		.add(false, '5701;6', 1, prices, keyVal)
+		.add(true, '5701;6', 1, prices, keyVal);
+	const ret = profit.get(poll.Polldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0.11 ref',
 		profitTimed: '0.11 ref',
@@ -177,91 +108,31 @@ test('1 scrap profit, no price change', () => {
 });
 
 test('0 scrap profit, sellprice went down', () => {
-	const testPolldata = {
-		timestamps: {
-			0: 1000,
-			1: 1500
+	const prices = {
+		buy: {
+			keys: 0,
+			metal: 0.88
 		},
-		offerData: {
-			0: {
-				dict: {
-					our: {
-						'5001;6': 2,
-						'5000;6': 2
-					},
-					their: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					their: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			1: {
-				dict: {
-					their: {
-						'5001;6': 2,
-						'5000;6': 2
-					},
-					our: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					their: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.77
-						},
-						sell: {
-							keys: 0,
-							metal: 0.88
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			}
+		sell: {
+			keys: 0,
+			metal: 1
 		}
 	};
-	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const prices2 = {
+		buy: {
+			keys: 0,
+			metal: 0.77
+		},
+		sell: {
+			keys: 0,
+			metal: 0.88
+		}
+	};
+	const poll = new polldataCreator()
+		.add(false, '5701;6', 1, prices, keyVal)
+		.add(true, '5701;6', 1, prices2, keyVal);
+
+	const ret = profit.get(poll.Polldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0 keys, 0 ref',
 		profitTimed: '0 keys, 0 ref',
@@ -274,90 +145,31 @@ test('0 scrap profit, sellprice went down', () => {
 });
 
 test('1 scrap profit, sellprice went down, overpay 1 scrap', () => {
-	const testPolldata = {
-		timestamps: {
-			0: 1000,
-			1: 1500
+	const prices = {
+		buy: {
+			keys: 0,
+			metal: 0.88
 		},
-		offerData: {
-			0: {
-				dict: {
-					our: {
-						'5001;6': 2,
-						'5000;6': 2
-					},
-					their: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					their: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			1: {
-				dict: {
-					their: {
-						'5002;6': 1
-					},
-					our: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					their: {
-						total: 9,
-						keys: 0,
-						metal: 1
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.77
-						},
-						sell: {
-							keys: 0,
-							metal: 0.88
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			}
+		sell: {
+			keys: 0,
+			metal: 1
 		}
 	};
-	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const prices2 = {
+		buy: {
+			keys: 0,
+			metal: 0.77
+		},
+		sell: {
+			keys: 0,
+			metal: 0.88
+		}
+	};
+	const poll = new polldataCreator()
+		.add(false, '5701;6', 1, prices, keyVal)
+		.add(true, '5701;6', 1, prices2, keyVal, {keys: 0, scrap: 1});
+
+	const ret = profit.get(poll.Polldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0.11 ref',
 		profitTimed: '0.11 ref',
@@ -370,90 +182,31 @@ test('1 scrap profit, sellprice went down, overpay 1 scrap', () => {
 });
 
 test('2 scrap profit, sellprice went up', () => {
-	const testPolldata = {
-		timestamps: {
-			0: 1000,
-			1: 1500
+	const prices = {
+		buy: {
+			keys: 0,
+			metal: 0.88
 		},
-		offerData: {
-			0: {
-				dict: {
-					our: {
-						'5001;6': 2,
-						'5000;6': 2
-					},
-					their: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					their: {
-						total: 8,
-						keys: 0,
-						metal: 0.88
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			1: {
-				dict: {
-					their: {
-						'5002;6': 1
-					},
-					our: {
-						'5701;6': 1
-					}
-				},
-				value: {
-					our: {
-						total: 10,
-						keys: 0,
-						metal: 1.11
-					},
-					their: {
-						total: 10,
-						keys: 0,
-						metal: 1.11
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1
-						},
-						sell: {
-							keys: 0,
-							metal: 1.11
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			}
+		sell: {
+			keys: 0,
+			metal: 1
 		}
 	};
-	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const prices2 = {
+		buy: {
+			keys: 0,
+			metal: 1
+		},
+		sell: {
+			keys: 0,
+			metal: 1.11
+		}
+	};
+	const poll = new polldataCreator()
+		.add(false, '5701;6', 1, prices, keyVal)
+		.add(true, '5701;6', 1, prices2, keyVal);
+
+	const ret = profit.get(poll.Polldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '0.22 ref',
 		profitTimed: '0.22 ref',
@@ -467,166 +220,33 @@ test('2 scrap profit, sellprice went up', () => {
 
 
 test('4 trades, with price change, no leftover inventory', () => {
-	const testPolldata = {
-		timestamps: {
-			0: 1000,
-			1: 1500,
-			2: 2000,
-			3: 2500
+	const prices = {
+		buy: {
+			keys: 0,
+			metal: 0.88
 		},
-		offerData: {
-			0: {
-				dict: {
-					our: {
-						'5002;6': 8
-					},
-					their: {
-						'5701;6': 9
-					}
-				},
-				value: {
-					our: {
-						total: 72,
-						keys: 0,
-						metal: 8
-					},
-					their: {
-						total: 72,
-						keys: 0,
-						metal: 8
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			1: {
-				dict: {
-					their: {
-						'5002;6': 3
-					},
-					our: {
-						'5701;6': 3
-					}
-				},
-				value: {
-					our: {
-						total: 9,
-						keys: 0,
-						metal: 1
-					},
-					their: {
-						total: 9,
-						keys: 0,
-						metal: 1
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			2: {
-				dict: {
-					our: {
-						'5002;6': 9
-					},
-					their: {
-						'5701;6': 9
-					}
-				},
-				value: {
-					our: {
-						total: 81,
-						keys: 0,
-						metal: 9
-					},
-					their: {
-						total: 81,
-						keys: 0,
-						metal: 9
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1
-						},
-						sell: {
-							keys: 0,
-							metal: 1.11
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			3: {
-				dict: {
-					their: {
-						'5002;6': 16,
-						'5001;6': 2
-					},
-					our: {
-						'5701;6': 15
-					}
-				},
-				value: {
-					our: {
-						total: 150,
-						keys: 0,
-						metal: 16.66
-					},
-					their: {
-						total: 150,
-						keys: 0,
-						metal: 16.66
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1
-						},
-						sell: {
-							keys: 0,
-							metal: 1.11
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			}
+		sell: {
+			keys: 0,
+			metal: 1
 		}
 	};
-	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const prices2 = {
+		buy: {
+			keys: 0,
+			metal: 1
+		},
+		sell: {
+			keys: 0,
+			metal: 1.11
+		}
+	};
+	const poll = new polldataCreator()
+		.add(false, '5701;6', 9, prices, keyVal)
+		.add(true, '5701;6', 3, prices, keyVal)
+		.add(false, '5701;6', 9, prices2, keyVal)
+		.add(true, '5701;6', 15, prices2, keyVal);
+
+	const ret = profit.get(poll.Polldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '2.66 ref',
 		profitTimed: '2.66 ref',
@@ -639,166 +259,33 @@ test('4 trades, with price change, no leftover inventory', () => {
 });
 
 test('4 trades, with price change, leftover inventory', () => {
-	const testPolldata = {
-		timestamps: {
-			0: 1000,
-			1: 1500,
-			2: 2000,
-			3: 2500
+	const prices = {
+		buy: {
+			keys: 0,
+			metal: 0.88
 		},
-		offerData: {
-			0: { // 8 * 9
-				dict: {
-					our: {
-						'5002;6': 8
-					},
-					their: {
-						'5701;6': 9
-					}
-				},
-				value: {
-					our: {
-						total: 72,
-						keys: 0,
-						metal: 8
-					},
-					their: {
-						total: 72,
-						keys: 0,
-						metal: 8
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			1: { // 8 * 6
-				dict: {
-					their: {
-						'5002;6': 3
-					},
-					our: {
-						'5701;6': 3
-					}
-				},
-				value: {
-					our: {
-						total: 27,
-						keys: 0,
-						metal: 3
-					},
-					their: {
-						total: 27,
-						keys: 0,
-						metal: 3
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			2: { // 8.6 * 15
-				dict: {
-					our: {
-						'5002;6': 9
-					},
-					their: {
-						'5701;6': 9
-					}
-				},
-				value: {
-					our: {
-						total: 81,
-						keys: 0,
-						metal: 9
-					},
-					their: {
-						total: 81,
-						keys: 0,
-						metal: 9
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1
-						},
-						sell: {
-							keys: 0,
-							metal: 1.11
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			3: { // 8.6 * 5
-				dict: {
-					their: {
-						'5002;6': 12,
-						'5000;6': 2
-					},
-					our: {
-						'5701;6': 10
-					}
-				},
-				value: {
-					our: {
-						total: 110,
-						keys: 0,
-						metal: 12.22
-					},
-					their: {
-						total: 110,
-						keys: 0,
-						metal: 12.22
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1
-						},
-						sell: {
-							keys: 0,
-							metal: 1.11
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			}
+		sell: {
+			keys: 0,
+			metal: 1
 		}
 	};
-	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const prices2 = {
+		buy: {
+			keys: 0,
+			metal: 1
+		},
+		sell: {
+			keys: 0,
+			metal: 1.11
+		}
+	};
+	const poll = new polldataCreator()
+		.add(false, '5701;6', 9, prices, keyVal)
+		.add(true, '5701;6', 3, prices, keyVal)
+		.add(false, '5701;6', 9, prices2, keyVal)
+		.add(true, '5701;6', 10, prices2, keyVal);
+		
+	const ret = profit.get(poll.Polldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '1.88 ref',
 		profitTimed: '1.88 ref',
@@ -816,243 +303,45 @@ test('4 trades, with price change, leftover inventory', () => {
 });
 
 test('6 trades, with 2 price changes, leftover inventory', () => {
-	const testPolldata = {
-		timestamps: {
-			0: 1000,
-			1: 1500,
-			2: 2000,
-			3: 2500,
-			4: 3000,
-			5: 3500
+	const prices = {
+		buy: {
+			keys: 0,
+			metal: 0.88
 		},
-		offerData: {
-			0: { // 8 * 9
-				dict: {
-					our: {
-						'5002;6': 8
-					},
-					their: {
-						'5701;6': 9
-					}
-				},
-				value: {
-					our: {
-						total: 72,
-						keys: 0,
-						metal: 8
-					},
-					their: {
-						total: 72,
-						keys: 0,
-						metal: 8
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			1: { // 8 * 6
-				dict: {
-					their: {
-						'5002;6': 3
-					},
-					our: {
-						'5701;6': 3
-					}
-				},
-				value: {
-					our: {
-						total: 27,
-						keys: 0,
-						metal: 3
-					},
-					their: {
-						total: 27,
-						keys: 0,
-						metal: 3
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 0.88
-						},
-						sell: {
-							keys: 0,
-							metal: 1
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			2: { // 8.6 * 15
-				dict: {
-					our: {
-						'5002;6': 9
-					},
-					their: {
-						'5701;6': 9
-					}
-				},
-				value: {
-					our: {
-						total: 81,
-						keys: 0,
-						metal: 9
-					},
-					their: {
-						total: 81,
-						keys: 0,
-						metal: 9
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1
-						},
-						sell: {
-							keys: 0,
-							metal: 1.11
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			3: { // 8.6 * 5
-				dict: {
-					their: {
-						'5002;6': 12,
-						'5000;6': 2
-					},
-					our: {
-						'5701;6': 10
-					}
-				},
-				value: {
-					our: {
-						total: 110,
-						keys: 0,
-						metal: 12.22
-					},
-					their: {
-						total: 110,
-						keys: 0,
-						metal: 12.22
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1
-						},
-						sell: {
-							keys: 0,
-							metal: 1.11
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			4: { // 9.5 * 14
-				dict: {
-					our: {
-						'5002;6': 10
-					},
-					their: {
-						'5701;6': 9
-					}
-				},
-				value: {
-					our: {
-						total: 90,
-						keys: 0,
-						metal: 10
-					},
-					their: {
-						total: 90,
-						keys: 0,
-						metal: 10
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1.11
-						},
-						sell: {
-							keys: 0,
-							metal: 1.22
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			},
-			5: { // 9.5 * 4
-				dict: {
-					their: {
-						'5002;6': 13,
-						'5001;6': 1
-					},
-					our: {
-						'5701;6': 10
-					}
-				},
-				value: {
-					our: {
-						total: 110,
-						keys: 0,
-						metal: 13.33
-					},
-					their: {
-						total: 110,
-						keys: 0,
-						metal: 13.33
-					},
-					rate: 53
-				},
-				prices: {
-					'5701;6': {
-						buy: {
-							keys: 0,
-							metal: 1.11
-						},
-						sell: {
-							keys: 0,
-							metal: 1.22
-						}
-					}
-				},
-				handledByUs: true,
-				isAccepted: true
-			}
+		sell: {
+			keys: 0,
+			metal: 1
 		}
 	};
-	const ret = profit.get(testPolldata, keyVal, 0, -1, Date.now());
+	const prices2 = {
+		buy: {
+			keys: 0,
+			metal: 1
+		},
+		sell: {
+			keys: 0,
+			metal: 1.11
+		}
+	};
+	const prices3 = {
+		buy: {
+			keys: 0,
+			metal: 1.11
+		},
+		sell: {
+			keys: 0,
+			metal: 1.22
+		}
+	};
+	const poll = new polldataCreator()
+		.add(false, '5701;6', 9, prices, keyVal)
+		.add(true, '5701;6', 3, prices, keyVal)
+		.add(false, '5701;6', 9, prices2, keyVal)
+		.add(true, '5701;6', 10, prices2, keyVal)
+		.add(false, '5701;6', 9, prices3, keyVal)
+		.add(true, '5701;6', 10, prices3, keyVal);
+		
+	const ret = profit.get(poll.Polldata, keyVal, 0, -1, Date.now());
 	expect(ret).toEqual({
 		profitTotal: '3.55 ref',
 		profitTimed: '3.55 ref',
