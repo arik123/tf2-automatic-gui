@@ -1154,11 +1154,11 @@ exports.ETradeOfferState = {
 	10: 'CanceledBySecondFactor',
 	11: 'InEscrow'
 };
-exports.qualityColors = {
-	0: '#B2B2B2',
-	1: '#4D7455',
+exports.qualityColors={
+	0: '#B2B2B2',//
+	1: '#4D7455',//
 	2: '#8D834B',
-	3: '#476291',
+	3: '#476291',//
 	4: '#70550F',
 	5: '#8650AC',
 	6: '#FFD700',
